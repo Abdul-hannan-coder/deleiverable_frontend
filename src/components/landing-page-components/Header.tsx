@@ -1,0 +1,161 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Menu, X, Play, Sun, Moon } from "lucide-react"
+import { useTheme } from "next-themes"
+
+export function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const isDark = theme === 'dark'
+
+  // Prevent hydration mismatch by only rendering theme-dependent content after mount
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 crypto-navbar">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2 group">
+            <div className="w-8 h-8 crypto-primary-gradient rounded-lg flex items-center justify-center group-hover:crypto-glow transition-all duration-300 crypto-glow">
+              <Play className="h-4 w-4 text-white fill-current" />
+            </div>
+            <span className="text-xl font-bold crypto-text-primary">Postsiva</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link 
+              href="/#how-it-works" 
+              className="crypto-text-secondary hover:crypto-text-primary pb-1 border-b-2 border-transparent hover:border-primary transition-all"
+            >
+              How It Works
+            </Link>
+            <Link 
+              href="/feature-showcase" 
+              className="crypto-text-secondary hover:crypto-text-primary pb-1 border-b-2 border-transparent hover:border-primary transition-all"
+            >
+              Features
+            </Link>
+            <Link 
+              href="/about-page" 
+              className="crypto-text-secondary hover:crypto-text-primary pb-1 border-b-2 border-transparent hover:border-primary transition-all"
+            >
+              About
+            </Link>
+            <Link 
+              href="/contact" 
+              className="crypto-text-secondary hover:crypto-text-primary pb-1 border-b-2 border-transparent hover:border-primary transition-all"
+            >
+              Contact Us
+            </Link>
+          </nav>
+
+          {/* Desktop Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setTheme(isDark ? 'light' : 'dark')}
+              className="h-9 w-9"
+              aria-label="Toggle theme"
+            >
+              {mounted ? (
+                isDark ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
+                )
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </Button>
+            
+            <Button variant="cryptoGhost" asChild>
+              <Link href="/auth/login">Login</Link>
+            </Button>
+            <Button variant="crypto" asChild>
+              <Link href="/auth/signup">Sign Up</Link>
+            </Button>
+          </div>
+
+          {/* Mobile Theme Toggle & Menu Button */}
+          <div className="md:hidden flex items-center space-x-2">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setTheme(isDark ? 'light' : 'dark')}
+              className="h-9 w-9"
+              aria-label="Toggle theme"
+            >
+              {mounted ? (
+                isDark ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </Button>
+            
+            <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-primary">
+            <nav className="flex flex-col space-y-4">
+              <Link
+                href="/#how-it-works"
+                className="crypto-text-secondary hover:crypto-text-primary pb-1 border-b-2 border-transparent hover:border-primary transition-all"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                How It Works
+              </Link>
+              <Link
+                href="/feature-showcase"
+                className="crypto-text-secondary hover:crypto-text-primary pb-1 border-b-2 border-transparent hover:border-primary transition-all"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Features
+              </Link>
+              <Link
+                href="/about-page"
+                className="crypto-text-secondary hover:crypto-text-primary pb-1 border-b-2 border-transparent hover:border-primary transition-all"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="crypto-text-secondary hover:crypto-text-primary pb-1 border-b-2 border-transparent hover:border-primary transition-all"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact Us
+              </Link>
+              <div className="flex flex-col space-y-2 pt-4 border-t border-primary">
+                <Button variant="cryptoGhost" asChild>
+                  <Link href="/auth/login">Login</Link>
+                </Button>
+                <Button variant="crypto" asChild>
+                  <Link href="/auth/signup">Sign Up</Link>
+                </Button>
+              </div>
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
+  )
+}
